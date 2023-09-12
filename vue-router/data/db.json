@@ -1,0 +1,24 @@
+{
+    "jobs": [
+        {
+            "id": 1,
+            "name": "IT",
+            "description": "lorem"
+        },
+        {
+            "id": 2,
+            "name": "QA",
+            "description": "lorem"
+        },
+        {
+            "id": 3,
+            "name": "HR",
+            "description": "lorem"
+        },
+        {
+            "id": 4,
+            "name": "BA",
+            "description": "lorem"
+        }
+    ]
+}
