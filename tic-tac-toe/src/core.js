@@ -51,3 +51,66 @@ export const gameOver = (board) => {
 
   return !hasEmpty ? -1 : 0
 }
+
+export const getNewPlayer = (player) => {
+  return player === 1 ? 2 : 1
+}
+
+export const makeMove = (board, { row = 3, col = 3, player }) => {
+  if (!isValidPosition({ row, col }, board) || marked({ row, col }, board)) {
+    throw new Error(`
+            Expected: 
+                row >= 0 and col >= 0,
+                row < ${board.length} and col < ${board[0].length},
+                and cell is not marked
+            Got:
+                row ${row}, col ${col}
+            `)
+  }
+
+  const newBoard = board.map((_row, rowIndex) => {
+    return _row.map((_col, colIndex) => {
+      if (rowIndex === row && colIndex === col) {
+        return player
+      }
+      return _col
+    })
+  })
+
+  return {
+    newBoard,
+    newPlayer: getNewPlayer(player)
+  }
+}
+
+export const undo = ({ currentMove, player }) => {
+  if (currentMove <= 0) {
+    throw new Error(`
+      Expected:
+        currentMove > 0
+      Got:
+        currentMove = ${currentMove}
+    `)
+  }
+
+  return {
+    newMove: currentMove - 1,
+    newPlayer: getNewPlayer(player)
+  }
+}
+
+export const redo = ({ currentMove, numberOfBoards, player }) => {
+  if (currentMove >= numberOfBoards) {
+    throw new Error(`
+      Expected:
+        currentMove < numberOfBoards
+      Got:
+        currentMove = ${currentMove}
+    `)
+  }
+
+  return {
+    newMove: currentMove + 1,
+    newPlayer: getNewPlayer(player)
+  }
+}

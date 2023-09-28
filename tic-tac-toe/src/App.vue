@@ -1,20 +1,12 @@
 <script setup lang="ts">
 import useTicTacToe from './composables/useTicTacToe'
 
-const { board, winner, mark, reset } = useTicTacToe()
+const { board, winner, mark, reset, undo, redo } = useTicTacToe()
 
 const chars = ['', 'X', 'O']
 
 const getChar = (value) => {
   return chars[value]
-}
-
-const play = (row, col) => {
-  try {
-    mark({ row, col })
-  } catch (error) {
-    return
-  }
 }
 </script>
 
@@ -25,9 +17,20 @@ const play = (row, col) => {
     <h1 class="gameover" v-if="winner">{{ winner }}</h1>
     <button class="play-again" v-if="winner" @click="reset">Play again</button>
 
+    <div class="undo-redo">
+      <button class="undo" @click="undo" v-if="!winner">Undo</button>
+      <button class="redo" @click="redo" v-if="!winner">Redo</button>
+    </div>
+
     <div class="board">
       <div class="row" v-for="(row, i) in board" :key="i">
-        <div class="col" :id="`col-${i}-${j}`" v-for="(col, j) in row" :key="j" @click="play(i, j)">
+        <div
+          class="col"
+          :id="`col-${i}-${j}`"
+          v-for="(col, j) in row"
+          :key="j"
+          @click="mark({ row: i, col: j })"
+        >
           {{ getChar(col) }}
         </div>
       </div>
@@ -69,7 +72,22 @@ body {
   cursor: pointer;
 }
 
-@media only screen and (max-width: 500px) {
+.undo-redo {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.undo,
+.redo {
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 0 4px;
+}
+
+@media only screen and (max-width: 960px) {
   .game-title {
     font-size: 30px;
   }
