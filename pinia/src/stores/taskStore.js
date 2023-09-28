@@ -20,23 +20,25 @@ export const useTaskStore = defineStore('taskStore', {
     },
     actions: {
         getTasks() {
+            console.log('handling getTasks')
             this.loading = true
-            fetch(`http://localhost:3000/tasks`)
+            fetch(`http://localhost:5555/tasks`)
                 .then(res => res.json())
                 .then(data => this.tasks = data)
                 .catch(err => console.error(err))
                 .finally(() => this.loading = false)
+            console.log('requested api')
         },
         deleteTask(id) {
             this.tasks = this.tasks.filter(task => task.id !== id)
-            fetch(`http://localhost:3000/tasks/${id}`, {
+            fetch(`http://localhost:5555/tasks/${id}`, {
                 method: 'DELETE',
             })
                 .catch(err => console.error(err))
         },
         addTask(task) {
             this.tasks.push(task)
-            fetch(`http://localhost:3000/tasks`, {
+            fetch(`http://localhost:5555/tasks`, {
                 method: 'POST',
                 body: JSON.stringify(task),
                 headers: {
@@ -48,7 +50,7 @@ export const useTaskStore = defineStore('taskStore', {
         toggleFavoriteTask(id) {
             const task = this.tasks.find(task => task.id === id)
             task.isFav = !task.isFav
-            fetch(`http://localhost:3000/tasks/${id}`, {
+            fetch(`http://localhost:5555/tasks/${id}`, {
                 method: 'PATCH',
                 body: JSON.stringify({ isFav: task.isFav }),
                 headers: {

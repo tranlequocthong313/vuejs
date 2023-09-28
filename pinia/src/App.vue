@@ -2,7 +2,7 @@
 import { useTaskStore } from './stores/taskStore.js';
 import TaskDetail from './components/TaskDetail.vue';
 import TaskForm from './components/TaskForm.vue';
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 
 const taskStore = useTaskStore();
@@ -10,7 +10,14 @@ const taskStore = useTaskStore();
 const { tasks, favoriteTaskCount, favoriteTasks, totalTaskCount, loading } =
   storeToRefs(taskStore);
 
-taskStore.getTasks();
+watch(loading, () => {
+  console.log('loading changed');
+});
+onMounted(async () => {
+  console.log('getTasks pending');
+  await taskStore.getTasks();
+  console.log('getTasks done');
+});
 
 const filter = ref('all');
 </script>

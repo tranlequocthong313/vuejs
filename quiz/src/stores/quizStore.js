@@ -5,9 +5,9 @@ import { computed, ref } from 'vue'
 const useQuizStore = defineStore('quizStore', () => {
     const questions = ref(null)
     const error = ref('')
-    const answered = ref(new Map)
     const currentQuestion = ref(null)
     const loading = ref(true)
+    const answered = ref(new Map)
     const submitted = ref(false)
     const reviewing = ref(false)
     const timer = ref(0)
