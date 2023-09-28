@@ -114,4 +114,67 @@ describe('App', () => {
     expect(wrapper.find('button.play-again').exists()).toBeFalsy()
     expect(wrapper.find('.gameover').exists()).toBeFalsy()
   })
+
+  it('should display undo and redo buttons by default', async () => {
+    const wrapper = factory()
+
+    expect(wrapper.find('button.undo').exists()).toBeTruthy()
+    expect(wrapper.find('button.redo').exists()).toBeTruthy()
+  })
+
+  it('should hide undo and redo buttons when game is over', async () => {
+    const wrapper = factory()
+
+    await wrapper.find('#col-0-0').trigger('click')
+    await wrapper.find('#col-1-1').trigger('click')
+    await wrapper.find('#col-1-0').trigger('click')
+    await wrapper.find('#col-0-1').trigger('click')
+    await wrapper.find('#col-0-2').trigger('click')
+    await wrapper.find('#col-2-1').trigger('click')
+
+
+    expect(wrapper.find('button.undo').exists()).toBeFalsy()
+    expect(wrapper.find('button.redo').exists()).toBeFalsy()
+  })
+
+  it('should undo correctly when player clicks on it', async () => {
+    const wrapper = factory()
+
+    await wrapper.find('#col-0-0').trigger('click')
+    await wrapper.find('#col-1-1').trigger('click')
+
+    expect(wrapper.find('#col-0-0').text()).toEqual('X')
+    expect(wrapper.find('#col-1-1').text()).toEqual('O')
+
+    await wrapper.find('button.undo').trigger('click')
+    expect(wrapper.find('#col-0-0').text()).toEqual('X')
+    expect(wrapper.find('#col-1-1').text()).toEqual('')
+
+    await wrapper.find('button.undo').trigger('click')
+    expect(wrapper.find('#col-0-0').text()).toEqual('')
+  })
+
+  it('should redo correctly when player clicks on it', async () => {
+    const wrapper = factory()
+
+    await wrapper.find('#col-0-0').trigger('click')
+    await wrapper.find('#col-1-1').trigger('click')
+    await wrapper.find('#col-1-0').trigger('click')
+
+    expect(wrapper.find('#col-0-0').text()).toEqual('X')
+    expect(wrapper.find('#col-1-1').text()).toEqual('O')
+    expect(wrapper.find('#col-1-0').text()).toEqual('X')
+
+    await wrapper.find('button.undo').trigger('click')
+    await wrapper.find('button.undo').trigger('click')
+    expect(wrapper.find('#col-0-0').text()).toEqual('X')
+    expect(wrapper.find('#col-1-1').text()).toEqual('')
+    expect(wrapper.find('#col-1-0').text()).toEqual('')
+
+    await wrapper.find('button.redo').trigger('click')
+    expect(wrapper.find('#col-1-1').text()).toEqual('O')
+
+    await wrapper.find('button.redo').trigger('click')
+    expect(wrapper.find('#col-1-0').text()).toEqual('X')
+  })
 })
